@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>タイピングゲーム</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    #header {
+        margin-bottom: 20px;
+    }
+    #game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    #word {
+        font-size: 48px;
+        margin-bottom: 20px;
+        color: #343a40;
+    }
+    #input {
+        padding: 10px;
+        font-size: 24px;
+        width: 300px;
+        border: 2px solid #ced4da;
+        border-radius: 5px;
+        outline: none;
+    }
+    #score {
+        font-size: 24px;
+        color: #343a40;
+    }
+    #timer {
+        font-size: 24px;
+        color: #343a40;
+        margin-top: 20px;
+    }
+    #start-screen, #game-over-screen {
+        display: none;
+    }
+    #start-button, #restart-button {
+        padding: 10px 20px;
+        font-size: 18px;
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+    #start-button:hover, #restart-button:hover {
+        background-color: #0056b3;
+    }
+    #logo {
+        width: 750px; /* 幅を設定 */
+        height: auto; /* 自動的に高さを調整 */
+    }
+</style>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div id="header">
+        <img id="logo" src="Nanisan.comver2.jpg" alt="Logo">
+    </div>
+
+    <!-- スタート画面 -->
+    <div id="start-screen">
+        <h1>タイピングゲーム</h1>
+        <button id="start-button">ゲーム開始</button>
+    </div>
+
+    <!-- ゲームコンテンツ -->
+    <div id="game-container">
+        <div id="word"></div>
+        <input type="text" id="input" autofocus  placeholder="ここに入力">
+        <div id="score">Score: 0</div>
+        <div id="timer">Time: 60</div>
+    </div>
+
+    <!-- ゲームオーバー画面 -->
+    <div id="game-over-screen">
+        <h1>結果</h1>
+        <p id="final-score"></p>
+        <button id="restart-button">もう一度プレイ</button>
+    </div>
+
+    <!-- 音声ファイルの読み込み -->
+    <audio id="typing-sound" src="typing.mp3" preload="auto"></audio>
+
+    <script>
+        const words = ["apple", "banana", "orange", "grape", "kiwi", "pineapple", "strawberry", "blueberry", "peach", "watermelon", "nobuchan"];
+        let score = 0;
+        let timer;
+        let timeLeft = 60; // 初期制限時間
+        let wordsTyped = 0; // 正しく入力された単語数
+
+        // スタート画面を表示
+        function showStartScreen() {
+            document.getElementById("start-screen").style.display = "block";
+            document.getElementById("game-container").style.display = "none";
+            document.getElementById("game-over-screen").style.display = "none";
+        }
+
+        // ゲーム画面を表示
+        function showGameScreen() {
+            document.getElementById("start-screen").style.display = "none";
+            document.getElementById("game-container").style.display = "flex";
+            document.getElementById("game-over-screen").style.display = "none";
+        }
+
+        // ゲームオーバー画面を表示
+        function showGameOverScreen() {
+            document.getElementById("start-screen").style.display = "none";
+            document.getElementById("game-container").style.display = "none";
+            document.getElementById("game-over-screen").style.display = "block";
+            document.getElementById("final-score").textContent = "Score: " + score;
+        }
+
+        // ゲームを開始する関数
+        function startGame() {
+            score = 0;
+            timeLeft = 60;
+            wordsTyped = 0;
+            document.getElementById("score").textContent = "Score: " + score;
+            document.getElementById("timer").textContent = "Time: " + timeLeft;
+            document.getElementById("input").value = ""; // テキストボックスの内容を空欄にする
+
+            // ゲーム画面を表示
+            showGameScreen();
+
+            const wordElement = document.getElementById("word");
+            const inputElement = document.getElementById("input");
+            const scoreElement = document.getElementById("score");
+            const typingSound = document.getElementById("typing-sound");
+            const timerElement = document.getElementById("timer");
+            let currentIndex = 0;
+
+            function displayWord() {
+                const randomIndex = Math.floor(Math.random() * words.length);
+                wordElement.textContent = words[randomIndex];
+            }
+
+            function checkWord() {
+                const typedWord = inputElement.value.trim().toLowerCase();
+                const currentWord = wordElement.textContent.trim().toLowerCase();
+                if (typedWord === currentWord) {
+                    score++;
+                    scoreElement.textContent = "Score: " + score;
+                    inputElement.value = "";
+                    displayWord();
+                    wordsTyped++;
+                    if (wordsTyped % 10 === 0) {
+                        timeLeft++;
+                        timerElement.textContent = "Time: " + timeLeft;
+                    }
+                }
+            }
+
+            inputElement.addEventListener("input", () => {
+                typingSound.currentTime = 0; // 効果音の再生位置をリセット
+                typingSound.play(); // 効果音を再生
+                checkWord();
+            });
+
+            displayWord();
+
+            // タイマーを開始
+            timer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = "Time: " + timeLeft;
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    showGameOverScreen();
+                }
+            }, 1000); // 1秒ごとに更新
+        }
+
+        // ゲーム開始ボタンのクリックイベント
+        document.getElementById("start-button").addEventListener("click", startGame);
+
+        // もう一度プレイボタンのクリックイベント
+        document.getElementById("restart-button").addEventListener("click", startGame);
+
+        // 初期状態ではスタート画面を表示
+        showStartScreen();
+    </script>
+    <h1> </h1>
+    <a href= "index.html" >Nanisan.com 通常検索</a>
+    <h1> </h1>
+    <a href= "image.html" >Nanisan.com 画像検索</a>
+</body>
+</html>

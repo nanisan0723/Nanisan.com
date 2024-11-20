@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>(ver2) Nanisan.com</title>
+    <style>
+        /* 中央配置用のスタイル */
+        .centered {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: -200vh; /* 画面の高さいっぱいに設定 */
+        }
+    </style>
+    <style>
+        /* CSSでボタンのサイズを指定する */
+        .submit-button {
+            width: 150px;
+            height: 50px;
+        }
+    </style>
+    <style>
+        /* 親要素のスタイル */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 30vh;
+        }
+
+        /* CSSでテキストボックスのサイズを指定する */
+        .textbox {
+            font-size: 50px; /* フォントサイズを指定 */
+            width: 800px;
+            height: 80px;
+        }
+
+        /* 送信ボタンのスタイル */
+        .submit-button {
+            margin-bottom: 290px; /* テキストボックスとの間隔を設定 */
+            padding: 8px 16px;
+            background-color: #ff4040; /* ボタンの背景色を設定 */
+            color: white; /* テキストカラーを白に設定 */
+            border: none; /* ボーダーをなしに設定 */
+            border-radius: 4px; /* ボタンの角を丸くする */
+            cursor: pointer; /* カーソルをポインターに変更 */
+        }
+    </style>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <script>
+        function submitForm() {
+            var message = document.getElementById("username").value;
+            if (message.trim() === "") {
+                window.location.href = "https://www.google.com/search?q=%E7%B9%94%E7%94%B0%E4%BF%A1%E9%95%B7&sca_esv=dccc38f8e2930152&sca_upv=1&udm=2&biw=1536&bih=722&sxsrf=ADLYWIIL1ooVUgCW1TkCKpwBk5M5KMeOjg%3A1719323309068&ei=rcp6Zq7pA9Kbvr0PyfCC-A4&ved=0ahUKEwju89y48vaGAxXSja8BHUm4AO8Q4dUDCBA&uact=5&oq=%E7%B9%94%E7%94%B0%E4%BF%A1%E9%95%B7&gs_lp=Egxnd3Mtd2l6LXNlcnAiDOe5lOeUsOS_oemVtzIEECMYJzIFEAAYgAQyBBAAGAMyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAESKcQUABYsA5wAXgAkAEBmAHDAaAB1wWqAQM1LjK4AQPIAQD4AQGYAgegAs8EqAIKwgIKEAAYgAQYsQMYBMICBxAAGIAEGATCAgcQIxgnGOoCwgINEAAYgAQYsQMYgwEYBMICBhAAGAMYBMICCBAAGIAEGLEDmAMNkgcDNS4yoAfyFQ&sclient=gws-wiz-serp";
+            } else {
+                var url = "https://www.google.com/search?q=" + encodeURIComponent(message) + "&sca_esv=dccc38f8e2930152&sca_upv=1&udm=2&biw=1536&bih=722&sxsrf=ADLYWII5JOg6VSwcMWDw35tM2AsxWqr7gA%3A1719323141671&ei=Bcp6ZoDJKJ3i2roPwbeFmAg&ved=0ahUKEwjA3_Po8faGAxUdsVYBHcFbAYMQ4dUDCBA&uact=5&oq=a&gs_lp=Egxnd3Mtd2l6LXNlcnAiAWEyBxAAGIAEGAQyChAAGIAEGLEDGAQyBxAAGIAEGAQyChAAGIAEGLEDGAQyBhAAGAMYBDIGEAAYAxgEMgcQABiABBgEMgcQABiABBgEMgoQABiABBixAxgEMgoQABiABBixAxgESJsIUABYtgdwAXgAkAEAmAFioAGwAaoBATK4AQPIAQD4AQGYAgOgAuEBqAIKwgIIEAAYgAQYsQPCAgcQIxgnGOoCmAMLkgcDMi4xoAfmBQ&sclient=gws-wiz-serp";
+                window.location.href = url;
+            }
+            return false; // ページの再読み込みを防ぐために false を返す
+        }
+    </script>
+    <div class="centered">
+        <img src="Nanisan.comver2.jpg" alt="おっと画像が謎のバグにより表示されてないようですね...">
+        <h1>画像検索</h1>
+    </div>
+    <form onsubmit="return submitForm();">
+        <div class="container">
+            <label for="username"></label>
+            <input type="text" id="username" name="username" class="textbox" placeholder="Nanisan.com で画像検索">
+        </div>
+        <div class="container">
+            <input type="submit" value="画像検索" class="submit-button">
+        </div>
+    </form>
+    <a href="manual.html">Nanisan.com 取説</a>
+    <h1> </h1>
+    <a href="image.html">Nanisan.com 画像検索</a>
+    <h1> </h1>
+    <a href="typing.html">Nanisan.com タイピングゲーム</a>
+</body>
+</html>
