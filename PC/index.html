@@ -51,6 +51,24 @@
 </head>
 <body>
     <script>
+        // ページロード時に画像を変更する
+        window.onload = function() {
+            const today = new Date();
+            const month = today.getMonth() + 1;  // 月（0-11なので1を足す）
+            const day = today.getDate();         // 日（1-31）
+
+            const imageElement = document.getElementById('image'); // 画像要素のIDを指定
+
+            // 4月1日または6月23日の場合に画像を変更
+            if (month === 4 && day === 1) {
+                imageElement.src = 'Nanisan.comver2 (April fool).jpg';
+            } else if (month === 6 && day === 23) {
+                imageElement.src = 'Nanisan.comver2 (birthday).jpg';
+            } else {
+                imageElement.src = 'Nanisan.comver2.jpg'; // デフォルトの画像
+            }
+        };
+
         function submitForm() {
             var message = document.getElementById("username").value;
             if (message.trim() === "") {
@@ -62,9 +80,11 @@
             return false; // ページの再読み込みを防ぐために false を返す
         }
     </script>
+
     <div class="centered">
-        <img src="Nanisan.comver2.jpg" alt="おっと画像が謎のバグにより表示されてないようですね...">
+        <img id="image" src="last/Nanisan.comver2.jpg" alt="おっと画像が謎のバグにより表示されてないようですね...">
     </div>
+    
     <form onsubmit="return submitForm();">
         <div class="container">
             <label for="username"></label>
@@ -77,6 +97,8 @@
     <a href="manual.html">Nanisan.com 取説</a>
     <h1> </h1>
     <a href="image.html">Nanisan.com 画像検索</a>
+    <h1> </h1>
+    <a href="game/index.html">Nanisan.com ゲーム</a>
     <h1> </h1>
     <a href="typing.html">Nanisan.com タイピングゲーム</a>
 </body>
