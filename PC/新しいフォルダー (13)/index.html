@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>クイズサイト</title>
   <style>
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to right, #a8edea, #fed6e3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  height: auto;
-  margin: 0;
-  padding: 20px;
-  box-sizing: border-box;
-}
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #a8edea, #fed6e3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      height: auto;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
     .quiz-container {
       background: white;
       padding: 30px;
@@ -53,8 +53,7 @@ body {
       color: white;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      width: 80%;
-      max-width: 100%;
+      margin: 5px;
     }
     button:hover {
       background-color: #5548e0;
@@ -63,24 +62,20 @@ body {
       font-size: 20px;
       margin-top: 15px;
     }
-
     @media (max-width: 600px) {
       .question {
         font-size: 20px;
       }
-
       input[type="text"], button {
         width: 100%;
         font-size: 16px;
       }
-
       .message {
         font-size: 18px;
       }
     }
   </style>
 </head>
-
 <body>
   <div class="quiz-container">
     <h1>クイズに挑戦！</h1>
@@ -88,11 +83,13 @@ body {
     <input type="text" id="answerInput" placeholder="答えを入力...">
     <br>
     <button onclick="submitAnswer()">回答する</button>
+    <button onclick="passQuestion()">パス</button>
     <div class="message" id="message"></div>
   </div>
 
   <audio id="correctSound" src="correct1.mp3"></audio>
   <audio id="wrongSound" src="incorrect2.mp3"></audio>
+  <audio id="questionSound" src="question1.mp3"></audio>
 
   <script>
     const quiz = [
@@ -197,9 +194,11 @@ body {
     let currentQuestion = 0;
 
     function loadQuestion() {
-      document.getElementById("question").textContent = quiz[currentQuestion].question;
+      const q = quiz[currentQuestion];
+      document.getElementById("question").textContent = q.question;
       document.getElementById("answerInput").value = "";
       document.getElementById("message").textContent = "";
+      document.getElementById("questionSound").play();
     }
 
     function submitAnswer() {
@@ -212,14 +211,31 @@ body {
         if (currentQuestion < quiz.length) {
           setTimeout(loadQuestion, 1000);
         } else {
-          document.getElementById("question").textContent = "全問正解！おめでとう！";
-          document.getElementById("answerInput").style.display = "none";
-          document.querySelector("button").style.display = "none";
+          endQuiz();
         }
       } else {
         document.getElementById("wrongSound").play();
         document.getElementById("message").textContent = "不正解...もう一度！";
       }
+    }
+
+    function passQuestion() {
+      const correct = quiz[currentQuestion].answer;
+      document.getElementById("wrongSound").play();
+      document.getElementById("message").textContent = `答え：${correct}`;
+      currentQuestion++;
+      if (currentQuestion < quiz.length) {
+        setTimeout(loadQuestion, 1000);
+      } else {
+        setTimeout(endQuiz, 1000);
+      }
+    }
+
+    function endQuiz() {
+      document.getElementById("question").textContent = "全問正解！おめでとう！";
+      document.getElementById("answerInput").style.display = "none";
+      document.querySelectorAll("button").forEach(btn => btn.style.display = "none");
+      document.getElementById("message").textContent = "";
     }
 
     loadQuestion();
