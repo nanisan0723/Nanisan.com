@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>音声認識クイズ</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    button { padding: 10px 20px; font-size: 16px; margin: 10px; }
+    #question { font-size: 24px; margin-bottom: 20px; }
+    #result { font-weight: bold; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div id="question">「りんご」は英語で？</div>
+  <button onclick="startRecognition()">答える（マイク）</button>
+  <div id="result">あなたの答え: <span id="answerText">--- </span></div>
+  <div id="judge"></div>
+
+  <script src="quiz.js"></script>
+</body>
+</html>
