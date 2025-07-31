@@ -1,21 +1,228 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <title>音声認識クイズ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>クイズサイト</title>
   <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
-    button { padding: 10px 20px; font-size: 16px; margin: 10px; }
-    #question { font-size: 24px; margin-bottom: 20px; }
-    #result { font-weight: bold; margin-top: 20px; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #a8edea, #fed6e3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  height: auto;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+    .quiz-container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .quiz-container:hover {
+      transform: scale(1.02);
+    }
+    .question {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      font-size: 18px;
+      width: 80%;
+      max-width: 100%;
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-sizing: border-box;
+    }
+    button {
+      font-size: 18px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background-color: #6c63ff;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 80%;
+      max-width: 100%;
+    }
+    button:hover {
+      background-color: #5548e0;
+    }
+    .message {
+      font-size: 20px;
+      margin-top: 15px;
+    }
+
+    @media (max-width: 600px) {
+      .question {
+        font-size: 20px;
+      }
+
+      input[type="text"], button {
+        width: 100%;
+        font-size: 16px;
+      }
+
+      .message {
+        font-size: 18px;
+      }
+    }
   </style>
 </head>
-<body>
-  <div id="question">「りんご」は英語で？</div>
-  <button onclick="startRecognition()">答える（マイク）</button>
-  <div id="result">あなたの答え: <span id="answerText">--- </span></div>
-  <div id="judge"></div>
 
-  <script src="quiz.js"></script>
+<body>
+  <div class="quiz-container">
+    <h1>クイズに挑戦！</h1>
+    <div class="question" id="question"></div>
+    <input type="text" id="answerInput" placeholder="答えを入力...">
+    <br>
+    <button onclick="submitAnswer()">回答する</button>
+    <div class="message" id="message"></div>
+  </div>
+
+  <audio id="correctSound" src="correct1.mp3"></audio>
+  <audio id="wrongSound" src="incorrect2.mp3"></audio>
+
+  <script>
+    const quiz = [
+  {
+    "question": "富士山の高さは約何メートル？",
+    "answer": "3776"
+  },
+  {
+    "question": "日本の首都はどこ？",
+    "answer": "東京"
+  },
+  {
+    "question": "地球は太陽の周りを何日で1周する？",
+    "answer": "365"
+  },
+  {
+    "question": "日本の国鳥は何？",
+    "answer": "キジ"
+  },
+  {
+    "question": "人間の体で一番重い臓器は？",
+    "answer": "肝臓"
+  },
+  {
+    "question": "1年は何ヶ月？",
+    "answer": "12"
+  },
+  {
+    "question": "水の化学式は？",
+    "answer": "H2O"
+  },
+  {
+    "question": "日本の紙幣に描かれている人物で1000円札は誰？",
+    "answer": "野口英世"
+  },
+  {
+    "question": "太陽系で最も大きい惑星は？",
+    "answer": "木星"
+  },
+  {
+    "question": "アメリカの初代大統領は誰？",
+    "answer": "ジョージ・ワシントン"
+  },
+  {
+    "question": "1メートルは何センチメートル？",
+    "answer": "100"
+  },
+  {
+    "question": "日本で一番長い川は？",
+    "answer": "信濃川"
+  },
+  {
+    "question": "日本の通貨単位は？",
+    "answer": "円"
+  },
+  {
+    "question": "フランスの首都は？",
+    "answer": "パリ"
+  },
+  {
+    "question": "ピカソはどこの国の画家？",
+    "answer": "スペイン"
+  },
+  {
+    "question": "九九の8×7は？",
+    "answer": "56"
+  },
+  {
+    "question": "赤道は地球の何を基準にした線？",
+    "answer": "緯度0度"
+  },
+  {
+    "question": "酸素の元素記号は？",
+    "answer": "O"
+  },
+  {
+    "question": "地球から一番近い恒星は？",
+    "answer": "太陽"
+  },
+  {
+    "question": "一週間は何日？",
+    "answer": "7"
+  },
+  {
+    "question": "オリンピックは何年ごとに開催される？",
+    "answer": "4"
+  },
+  {
+    "question": "バナナは果物？野菜？",
+    "answer": "果物"
+  },
+  {
+    "question": "元素記号Naは何の元素？",
+    "answer": "ナトリウム"
+  },
+  {
+    "question": "地球にある海の数はいくつ？",
+    "answer": "5"
+  }
+    ];
+
+    let currentQuestion = 0;
+
+    function loadQuestion() {
+      document.getElementById("question").textContent = quiz[currentQuestion].question;
+      document.getElementById("answerInput").value = "";
+      document.getElementById("message").textContent = "";
+    }
+
+    function submitAnswer() {
+      const input = document.getElementById("answerInput").value.trim();
+      const correct = quiz[currentQuestion].answer;
+      if (input === correct) {
+        document.getElementById("correctSound").play();
+        document.getElementById("message").textContent = "正解！";
+        currentQuestion++;
+        if (currentQuestion < quiz.length) {
+          setTimeout(loadQuestion, 1000);
+        } else {
+          document.getElementById("question").textContent = "全問正解！おめでとう！";
+          document.getElementById("answerInput").style.display = "none";
+          document.querySelector("button").style.display = "none";
+        }
+      } else {
+        document.getElementById("wrongSound").play();
+        document.getElementById("message").textContent = "不正解...もう一度！";
+      }
+    }
+
+    loadQuestion();
+  </script>
 </body>
 </html>
